@@ -1,6 +1,6 @@
 # Core of the GPT model
 ![Example Image](/Users/lujiarun/PycharmProjects/DBOT/asset/structure.png)
-Jiarun
+
 ### Transformer Block
 - A Masked Multi-head Attention layer
 - A Feed forward layer
