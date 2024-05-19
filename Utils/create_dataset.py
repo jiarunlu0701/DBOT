@@ -23,7 +23,6 @@ class GPTDatasetV1(Dataset):
     def __getitem__(self, idx):
         return self.input_ids[idx], self.target_ids[idx]
 
-
 def create_dataloader_v1(text, batch_size, max_length, stride, shuffle=True, drop_last=True):
     dataset = GPTDatasetV1(text, tokenizer, max_length, stride)
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=shuffle, drop_last=drop_last)

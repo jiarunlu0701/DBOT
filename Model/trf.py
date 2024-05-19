@@ -10,7 +10,7 @@ class LayerNorm(nn.Module):
         self.shift = nn.Parameter(torch.zeros(emb_dim))
         # The initial 'scale' (multiplying by 1) and 'shift' (adding 0) values don't have any effect;
         # however, 'scale' and 'shift' are trainable parameters that the LLM automatically adjusts
-        # during training if it is determined that doing so would improve the model's performance on its
+        # during training if it is determined that doing so would improve the Model's performance on its
         # training task
 
         # Note that we also add a smaller value ('eps') before computing the square root of the variance;
@@ -50,7 +50,7 @@ class FeedForward(nn.Module):
 class TransformerBlock(nn.Module):
     def __init__(self, cfg):
         super().__init__()
-        self.attention = MultiHeadAttention(
+        self.att = MultiHeadAttention(
             d_in=cfg['emb_dim'],
             d_out=cfg['emb_dim'],
             context_length=cfg['context_length'],
@@ -66,7 +66,7 @@ class TransformerBlock(nn.Module):
         # Shortcut connection for attention block
         shortcut = x
         x = self.norm1(x)
-        x = self.attention(x)  # Shape [batch_size, num_tokens, emb_size]
+        x = self.att(x)  # Shape [batch_size, num_tokens, emb_size]
         x = self.drop_resid(x)
         x = x + shortcut  # Add the original input back
 

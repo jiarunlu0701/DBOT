@@ -1,13 +1,14 @@
 import torch
 import tiktoken
-from Model import GPT_MODEL
-from Utils import create_dataloader_v1, plot_losses
-from Train import train
+from create_dataset import create_dataloader_v1
 
 tokenizer = tiktoken.get_encoding("gpt2")
+
 file_path = "/Users/lujiarun/PycharmProjects/DBOT/Database/the-verdict.txt"
 with open(file_path, "r", encoding="utf-8") as file:
     text_data = file.read()
+total_tokens = len(tokenizer.encode(text_data))
+
 GPT_CONFIG_124M = {
     "vocab_size": 50257,  # Vocabulary size
     "context_length": 256,  # Context length
@@ -18,14 +19,12 @@ GPT_CONFIG_124M = {
     "qkv_bias": False  # Query-Key-Value bias
 }
 
-device = 'cpu'
-torch.manual_seed(123)
-model = GPT_MODEL(GPT_CONFIG_124M)
-model.to(device)
 train_ratio = 0.90
 split_idx = int(train_ratio * len(text_data))
 train_data = text_data[:split_idx]
 val_data = text_data[split_idx:]
+
+torch.manual_seed(123)
 
 train_loader = create_dataloader_v1(
     train_data,
@@ -44,20 +43,21 @@ val_loader = create_dataloader_v1(
     drop_last=False,
     shuffle=False
 )
+# Sanity check
 
-optimizer = torch.optim.AdamW(model.parameters(), lr=0.0004, weight_decay=0.1)
-num_epochs = 10
-train_losses, val_losses, tokens_seen = train(
-    model, train_loader, val_loader, optimizer, device, num_epochs=num_epochs, eval_freq=5, eval_iter=1,
-    start_context="Every effort moves you"
-)
+if total_tokens * train_ratio < GPT_CONFIG_124M["context_length"]:
+    print("Not enough tokens for the training loader. "
+          "Try to lower the `GPT_CONFIG_124M['context_length']` or "
+          "increase the `training_ratio`")
 
-epochs_tensor = torch.linspace(0, num_epochs, len(train_losses))
-plot_losses(epochs_tensor, tokens_seen, train_losses, val_losses)
+if total_tokens * (1 - train_ratio) < GPT_CONFIG_124M["context_length"]:
+    print("Not enough tokens for the validation loader. "
+          "Try to lower the `GPT_CONFIG_124M['context_length']` or "
+          "decrease the `training_ratio`")
+print("Train loader:")
+for x, y in train_loader:
+    print(x.shape, y.shape)
 
-torch.save({
-    "model_state_dict": model.state_dict(),
-    "optimizer_state_dict": optimizer.state_dict(),
-    },
-    "model_and_optimizer.pth"
-)
+print("\nValidation loader:")
+for x, y in val_loader:
+    print(x.shape, y.shape)

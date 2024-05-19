@@ -1,4 +1,4 @@
-from model import GPT_MODEL
+from Model import GPT_MODEL
 import torch
 
 GPT_CONFIG_124M = {
