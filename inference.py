@@ -2,9 +2,10 @@ import torch
 from Model import GPT_MODEL
 from Utils import text_to_token, token_to_text, generate_text
 
+
 GPT_CONFIG_124M = {
-    "vocab_size": 50257,  # Vocabulary size
-    "context_length": 256,  # Context length
+    "vocab_size": 21129,  # Vocabulary size
+    "context_length": 512,  # Context length
     "emb_dim": 768,  # Embedding dimension
     "n_heads": 12,  # Number of attention heads
     "n_layers": 12,  # Number of layers
@@ -22,10 +23,10 @@ print("Model name:", model.__class__.__name__)
 torch.manual_seed(123)
 token_ids = generate_text(
     model=model,
-    input_ids=text_to_token("Hello world, my name is Jiarun Lu"),
-    max_new_tokens=50,
+    input_ids=text_to_token("介绍一下你们公司：北京清大科越股份有限公司"),
+    max_new_tokens=100,
     context_size=GPT_CONFIG_124M["context_length"],
-    top_k=25,
+    top_k=10,
     temperature=1.4
 )
 print("Output text:\n", token_to_text(token_ids))

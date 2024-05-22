@@ -1,11 +1,13 @@
 import tiktoken
 import torch
+from transformers import BertTokenizer
 
 tokenizer = tiktoken.get_encoding("gpt2")
+tokenizer = BertTokenizer.from_pretrained("bert-base-chinese")
 
 
 def text_to_token(text):
-    encoded = tokenizer.encode(text, allowed_special={'<|endoftext|>'})
+    encoded = tokenizer.encode(text)
     encoded_tensor = torch.tensor(encoded).unsqueeze(0)
     return encoded_tensor
 

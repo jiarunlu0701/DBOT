@@ -1,16 +1,15 @@
 import torch
-import tiktoken
 from Model import GPT_MODEL
 from Utils import create_dataloader_v1, plot_losses
 from Train import train
 
-tokenizer = tiktoken.get_encoding("gpt2")
 file_path = "/Users/lujiarun/PycharmProjects/DBOT/Database/the-verdict.txt"
 with open(file_path, "r", encoding="utf-8") as file:
     text_data = file.read()
+
 GPT_CONFIG_124M = {
-    "vocab_size": 50257,  # Vocabulary size
-    "context_length": 256,  # Context length
+    "vocab_size": 21129,  # Vocabulary size
+    "context_length": 512,  # Context length
     "emb_dim": 768,  # Embedding dimension
     "n_heads": 12,  # Number of attention heads
     "n_layers": 12,  # Number of layers
@@ -49,7 +48,7 @@ optimizer = torch.optim.AdamW(model.parameters(), lr=0.0004, weight_decay=0.1)
 num_epochs = 10
 train_losses, val_losses, tokens_seen = train(
     model, train_loader, val_loader, optimizer, device, num_epochs=num_epochs, eval_freq=5, eval_iter=1,
-    start_context="Every effort moves you"
+    start_context="清大科越"
 )
 
 epochs_tensor = torch.linspace(0, num_epochs, len(train_losses))

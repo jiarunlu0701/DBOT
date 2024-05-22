@@ -1,17 +1,20 @@
 import torch
 import tiktoken
-from create_dataset import create_dataloader_v1
+from create_dataset import create_dataloader_v1, GPTDatasetV1
+from transformers import BertTokenizer
 
 tokenizer = tiktoken.get_encoding("gpt2")
+tokenizer = BertTokenizer.from_pretrained("bert-base-chinese")
 
 file_path = "/Users/lujiarun/PycharmProjects/DBOT/Database/the-verdict.txt"
 with open(file_path, "r", encoding="utf-8") as file:
     text_data = file.read()
-total_tokens = len(tokenizer.encode(text_data))
+total_tokens = len(text_data)
+print(total_tokens)
 
 GPT_CONFIG_124M = {
-    "vocab_size": 50257,  # Vocabulary size
-    "context_length": 256,  # Context length
+    "vocab_size": 21129,  # Vocabulary size
+    "context_length": 512,  # Context length
     "emb_dim": 768,  # Embedding dimension
     "n_heads": 12,  # Number of attention heads
     "n_layers": 12,  # Number of layers
